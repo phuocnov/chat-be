@@ -1,23 +1,43 @@
 import { Injectable } from '@nestjs/common';
-
-export type User = any;
+import { EntityManager, Repository } from 'typeorm';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme'
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess'
-    },
-  ]
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly entityManager: EntityManager) { }
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.username === username)
+  async create(createUserDto: CreateUserDto) {
+    const user = new User(createUserDto);
+    await this.entityManager.save(user)
+    return user;
+  }
+
+  async findAll() {
+    return await this.userRepository.find();
+  }
+
+  async findOne(username: string) {
+    return await this.userRepository.findOneBy({
+      username
+    })
+  }
+
+  async update(id: number, updateDto: UpdateUserDto) {
+    // const user = await this.userRepository.findOneBy({ id });
+    // Object.assign(user, updateDto);
+    // await this.entityManager.save(user);
+    // return user;
+
+    await this.entityManager.transaction(async entityManager => {
+      const user = await this.userRepository.findOneBy({ id });
+      Object.assign(user, updateDto);
+      await entityManager.save(user);
+    })
   }
 }

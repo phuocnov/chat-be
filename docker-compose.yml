@@ -1,25 +1,6 @@
 version: '3.8'
 
 services:
-  chat-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '${PORT}:${PORT}'
-    environment:
-      - PORT=${PORT}
-      - NODE_ENV=${NODE_ENV}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-    volumes:
-      - ./src:/usr/src/app/src
-    depends_on:
-      - postgres
-
   postgres:
     image: postgres:15
     restart: always
