@@ -12,6 +12,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  email: string;
+
   @ManyToMany(() => Chat, chat => chat.users)
   chats: Chat[];
 
