@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_NAME || 'chat_db',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     ChatsModule,
     ChatMessagesModule,],

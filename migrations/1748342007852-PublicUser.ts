@@ -5,8 +5,9 @@ export class PublicUser1748342007852 implements MigrationInterface {
   private readonly logger = new Logger(PublicUser1748342007852.name)
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    this.logger.log('Up')
-    await queryRunner.createTable(
+    this.logger.log('Up');
+    const tableExisted = await queryRunner.hasTable('user')
+    if (!tableExisted) await queryRunner.createTable(
       new Table({
         name: "user",
         columns: [
@@ -35,7 +36,7 @@ export class PublicUser1748342007852 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     this.logger.log('Up')
-    await queryRunner.dropTable("user");
+    const tableExisted = await queryRunner.hasTable('user')
+    if (tableExisted) await queryRunner.dropTable("user");
   }
-
 }
