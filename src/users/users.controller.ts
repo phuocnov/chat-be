@@ -1,8 +1,9 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Req, Res, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, NotFoundException, Param, ParseIntPipe, Post, Req, Res, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { plainToClass } from 'class-transformer';
 import { SerializedUser } from './types';
+import { UserNotFoundException } from './exceptions/user-not-found.exception';
+// import { HttpExceptionFilter } from './filters/HttpException.filter';
 
 @Controller('users')
 export class UsersController {
@@ -14,11 +15,14 @@ export class UsersController {
     const users = await this.usersService.findAll();
     return users;
   }
+
   @Get('search/:id')
+  // @UseFilters(HttpExceptionFilter)
+  @UseInterceptors(ClassSerializerInterceptor)
   async searchUserById(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findOne(id);
-    if (!user) throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    return user;
+    if (!user) throw new UserNotFoundException();
+    return new SerializedUser(user);
   }
 
   @Post()

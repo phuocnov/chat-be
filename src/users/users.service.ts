@@ -24,7 +24,6 @@ export class UsersService {
     const users = await this.userRepository.find();
     return users.map(user =>
       new SerializedUser(user));
-
   }
 
   async findOne(id: number) {
