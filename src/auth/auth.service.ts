@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt'
 import { SignUpDto } from './dtos/signup.dto';
@@ -6,10 +6,15 @@ import { SignUpDto } from './dtos/signup.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService
+    @Inject('USER_SERVICE')
+    private readonly usersService: UsersService,
   ) { }
 
+  async validateUser(username: string, password: string) {
+    const user = await this.usersService.findByUsername(username);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+    return user;
+  }
   async signIn(username: string, password: string) {
     // const user = await this.usersService.findOne(username);
     // if (user?.password !== password) {

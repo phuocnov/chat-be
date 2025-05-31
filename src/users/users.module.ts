@@ -16,8 +16,13 @@ import { ValidateUserMiddleware } from './middlewares/validate-user.middleware';
       ChatMessage
     ])
   ],
-  providers: [UsersService, UserRepository],
-  exports: [UsersService],
+  providers: [
+    {
+      provide: 'USER_SERVICE',
+      useClass: UsersService
+    },
+    UserRepository],
+  exports: [],
   controllers: [UsersController]
 })
 export class UsersModule implements NestModule {
