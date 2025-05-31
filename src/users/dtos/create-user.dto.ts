@@ -1,6 +1,4 @@
-import { ClassTransformer, Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsNotEmptyObject, IsString, ValidateNested } from "class-validator";
-import { CreateAddressDto } from "./create-address.dto";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateUserDto {
   @IsString()
